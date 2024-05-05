@@ -1,49 +1,22 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Avatar from "@mui/material/Avatar";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-import { List, ListItem, ListItemText } from "@mui/material";
+import { Button, Grid, List, ListItem, ListItemText } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
+import { Style } from "@mui/icons-material";
+import SignedInMenu from "./SignedInMenu";
+import { navStyles } from "./navStyles";
+import { useAppSelector } from "../store/configureStore";
 
 const midLinks = [
   { title: "My Classes", path: "/my-classes" },
   { title: "Make Flashcards", path: "/make-flashcards" },
 ];
 
-const settingLinks = [
-  { title: "Profile", path: "/profile" },
-  { title: "Dashboard", path: "/dashboard" },
-  { title: "Log Out", path: "/logout" },
-];
-
-const navStyles = {
-  paddingY: 1.5,
-  color: "inherit",
-  fontSize: "1rem",
-  textDecoration: "none",
-  whiteSpace: "nowrap",
-  "&:hover": { color: "grey.500" },
-  "&.active": { color: "text.secondary" },
-};
-
 export default function Header() {
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+  const { user } = useAppSelector((state) => state.account);
 
   return (
     <AppBar position="static">
@@ -67,7 +40,7 @@ export default function Header() {
             textDecoration: "none",
           }}
         >
-          <AdbIcon sx={{ display: "flex", mr: 1 }} />
+          <Style sx={{ display: "flex", mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -96,43 +69,55 @@ export default function Header() {
         </Box>
 
         {/* Right */}
-        <Box>
-          <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar src="/static/images/avatar/2.jpg" />
-            </IconButton>
-          </Tooltip>
-          <Menu
-            sx={{ mt: "45px" }}
-            id="menu-appbar"
-            anchorEl={anchorElUser}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={Boolean(anchorElUser)}
-            onClose={handleCloseUserMenu}
-          >
-            {settingLinks.map(({ title, path }) => (
-              <MenuItem key={path} onClick={handleCloseUserMenu}>
-                <Typography
+        {user ? (
+          <SignedInMenu />
+        ) : (
+          <Box>
+            <Grid
+              container
+              alignItems="center"
+              justifyContent="center"
+              columnSpacing={2}
+            >
+              <Grid item>
+                <Button
+                  sx={{
+                    textTransform: "none",
+                    color: "white",
+                    fontSize: "1.2rem",
+                    paddingX: "1rem",
+                    paddingY: "0.6rem",
+                  }}
+                  variant="text"
                   component={NavLink}
-                  to={path}
-                  key={path}
-                  sx={navStyles}
-                  textAlign="center"
+                  to="/login"
                 >
-                  {title}
-                </Typography>
-              </MenuItem>
-            ))}
-          </Menu>
-        </Box>
+                  Login
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  sx={{
+                    textTransform: "none",
+                    color: "white",
+                    // backgroundColor: "#632bf0",
+                    fontSize: "1.2rem",
+                    paddingX: "1rem",
+                    paddingY: "0.6rem",
+                    borderRadius: "25px",
+                    borderColor: "white",
+                    borderWidth: "2px",
+                  }}
+                  variant="outlined"
+                  component={NavLink}
+                  to="/register"
+                >
+                  Register
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
       </Toolbar>
     </AppBar>
   );

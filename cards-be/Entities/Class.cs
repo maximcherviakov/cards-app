@@ -1,4 +1,4 @@
-﻿namespace API.Entites;
+﻿namespace API.Entities;
 
 public class Class
 {
@@ -10,7 +10,7 @@ public class Class
     public DateTime UpdatedAt { get; set; }
 
     // navigation properties
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public User User { get; set; }
 
     public List<Deck> Decks { get; set; } = [];

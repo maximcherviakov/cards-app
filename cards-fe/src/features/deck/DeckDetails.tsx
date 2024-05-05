@@ -36,12 +36,7 @@ export default function DeckDetails() {
     if (id)
       agent.Deck.deckById(parseInt(id))
         .then((response) => setDeck(response))
-        .catch((error) => {
-          console.log(error);
-          if (error.status === 404) {
-            navigate("not-found");
-          }
-        })
+        .catch((error) => console.log(error))
         .finally(() => setDeckLoaded(true));
   }, [id, navigate]);
 

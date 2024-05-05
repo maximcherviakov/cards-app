@@ -1,13 +1,9 @@
-namespace API.Entites;
+using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace API.Entities;
+
+public class User : IdentityUser
 {
-    public int Id { get; set; }
-    public string Username { get; set; }
-    public string HashPassword { get; set; }
-    public string Email { get; set; }
-    public DateTime RegistrationTime { get; set; }
-
     // navigation properties
     public List<Class> Classes { get; set; } = [];
     public List<Deck> Decks { get; set; } = [];

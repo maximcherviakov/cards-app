@@ -1,9 +1,10 @@
 using API.Data;
 using API.DTOs;
-using API.Entites;
+using API.Entities;
 using API.Extensions;
 using API.RequestHelpers;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +14,13 @@ public class DecksController : BaseApiController
 {
     private readonly DataContext _context;
     private readonly IMapper _mapper;
+    private readonly UserManager<User> _userManager;
 
-    public DecksController(DataContext context, IMapper mapper)
+    public DecksController(DataContext context, IMapper mapper, UserManager<User> userManager)
     {
         _context = context;
         _mapper = mapper;
+        _userManager = userManager;
     }
 
     [HttpGet]
@@ -49,6 +52,8 @@ public class DecksController : BaseApiController
             .FirstAsync(item => item.Id == id);
 
         if (deck == null) return NotFound();
+
+        if (deck.IsPrivate && deck.User.UserName != User.Identity?.Name) return Unauthorized();
 
         return _mapper.Map<DeckWithCardsDto>(deck);
     }

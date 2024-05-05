@@ -1,4 +1,4 @@
-﻿namespace API.Entites;
+﻿namespace API.Entities;
 
 public class Card
 {

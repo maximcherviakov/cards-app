@@ -1,54 +1,51 @@
-using API.Entites;
+using API.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Data;
 
 public static class DbInitializer
 {
-    public static void Initialize(DataContext context)
+    public static async Task Initialize(DataContext context, UserManager<User> userManager)
     {
         var users = new List<User>
         {
             new User
             {
-                Id = 1,
-                Username = "Jessica Thompson",
-                HashPassword = "StrongPassword.1234",
+                UserName = "Jessica Thompson",
                 Email = "jessica.thompson@example.com",
-                RegistrationTime = DateTime.Now
             },
             new User
             {
-                Id = 2,
-                Username = "Alexander Lee",
-                HashPassword = "StrongPassword.1234",
+                UserName = "Alexander Lee",
                 Email = "alexander.lee@example.com",
-                RegistrationTime = DateTime.Now
             },
             new User
             {
-                Id = 3,
-                Username = "Samantha Rodriguez",
-                HashPassword = "StrongPassword.1234",
+                UserName = "Samantha Rodriguez",
                 Email = "samantha.rodriguez@example.com",
-                RegistrationTime = DateTime.Now
             },
             new User
             {
-                Id = 4,
-                Username = "David Smith",
-                HashPassword = "StrongPassword.1234",
+                UserName = "David Smith",
                 Email = "david.smith@example.com",
-                RegistrationTime = DateTime.Now
             },
             new User
             {
-                Id = 5,
-                Username = "Emily Chen",
-                HashPassword = "StrongPassword.1234",
+                UserName = "Emily Chen",
                 Email = "emily.chen@example.com",
-                RegistrationTime = DateTime.Now
             },
         };
+
+        context.Cards.RemoveRange(context.Cards);
+        context.Decks.RemoveRange(context.Decks);
+        context.Classes.RemoveRange(context.Classes);
+        context.Users.RemoveRange(context.Users);
+
+        foreach (var user in users)
+        {
+            await userManager.CreateAsync(user, "Pa$$w0rd");
+            await userManager.AddToRoleAsync(user, "Member");
+        }
 
         var classes = new List<Class>
         {
@@ -330,7 +327,7 @@ public static class DbInitializer
                 Id = 12,
                 Title = "Culture & Art",
                 Description = "Deck for Culture & Art topic",
-                IsPrivate = false,
+                IsPrivate = true,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 User = users[2]
@@ -385,13 +382,6 @@ public static class DbInitializer
         decks.Find(item => item.Title.Equals("Goods & Services"))?.Cards.Add(cards.Find(item => item.Id == 3));
         decks.Find(item => item.Title.Equals("Goods & Services"))?.Cards.Add(cards.Find(item => item.Id == 4));
 
-
-        context.Users.RemoveRange(context.Users);
-        context.Cards.RemoveRange(context.Cards);
-        context.Decks.RemoveRange(context.Decks);
-        context.Classes.RemoveRange(context.Classes);
-
-        context.Users.AddRange(users);
         context.Classes.AddRange(classes);
         context.Decks.AddRange(decks);
         context.Decks.AddRange(decks);

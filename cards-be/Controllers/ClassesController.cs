@@ -1,6 +1,6 @@
 using API.Data;
 using API.DTOs;
-using API.Entites;
+using API.Entities;
 using API.Extensions;
 using API.RequestHelpers;
 using AutoMapper;

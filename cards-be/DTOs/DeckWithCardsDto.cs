@@ -9,7 +9,6 @@ public class DeckWithCardsDto
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public int? ClassId { get; set; }
-    public int UserId { get; set; }
     public string Username { get; set; }
     public List<CardDto> Cards { get; set; }
 }

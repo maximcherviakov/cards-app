@@ -8,7 +8,6 @@ export interface Deck {
   createdAt: string;
   updatedAt: string;
   classId: number;
-  userId: number;
   username: string;
   cardsCount: number;
 }
@@ -21,7 +20,6 @@ export interface DeckWithCards {
   createdAt: string;
   updatedAt: string;
   classId: number;
-  userId: number;
   username: string;
   cards: Flashcard[];
 }

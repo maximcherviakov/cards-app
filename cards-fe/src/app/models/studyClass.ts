@@ -5,6 +5,5 @@ export interface Class {
   isPrivate: boolean;
   createdAt: string;
   updatedAt: string;
-  userId: number;
   username: string;
 }
