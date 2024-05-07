@@ -39,7 +39,11 @@ public static class DbInitializer
         context.Cards.RemoveRange(context.Cards);
         context.Decks.RemoveRange(context.Decks);
         context.Classes.RemoveRange(context.Classes);
-        context.Users.RemoveRange(context.Users);
+        
+        foreach (var user in context.Users)
+        {
+            await userManager.DeleteAsync(user);
+        }
 
         foreach (var user in users)
         {

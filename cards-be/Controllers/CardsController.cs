@@ -1,6 +1,8 @@
 using API.Data;
-using API.DTOs;
 using API.Entities;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,56 +11,121 @@ namespace API.Controllers;
 public class CardsController : BaseApiController
 {
     private readonly DataContext _context;
+    private readonly UserManager<User> _userManager;
 
-    public CardsController(DataContext context)
+    public CardsController(DataContext context, UserManager<User> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<List<CardDto>>> GetCards()
+    [Authorize]
+    [HttpPost("{id}")]
+    public async Task<ActionResult> CreateCard(int id, CardContentDto cardDto)
     {
-        return MapCardsToDtos(await _context.Cards.ToListAsync());
+        // get user
+        var user = await _userManager.FindByNameAsync(User.Identity?.Name);
+        if (user == null) return Unauthorized();
+
+        // get deck
+        if (await _context.Decks.FindAsync(id) == null) return NotFound();
+
+        var deck = await _context.Decks
+            .Include(item => item.User)
+            .Include(item => item.Cards)
+            .FirstAsync(item => item.Id == id);
+
+        if (deck == null) return NotFound();
+
+        // check user
+        if (deck.User.UserName != User.Identity?.Name) return Unauthorized();
+
+        // create card
+        var card = new Card
+        {
+            FrontText = cardDto.FrontText,
+            BackText = cardDto.BackText,
+            ImageUrl = cardDto.ImageUrl,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        // add card
+        deck.Cards.Add(card);
+
+        // save
+        var result = await _context.SaveChangesAsync() > 0;
+
+        if (result) return Ok();
+
+        return BadRequest(new ProblemDetails { Title = "Problem with saving card" });
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<CardDto>> GetCard(int id)
+    [Authorize]
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateCard(int id, CardContentDto cardDto)
     {
-        var card = await _context.Cards.FindAsync(id);
+        // get user
+        var user = await _userManager.FindByNameAsync(User.Identity?.Name);
+        if (user == null) return Unauthorized();
+
+        // get card
+        if (await _context.Cards.FindAsync(id) == null) return NotFound();
+
+        var card = await _context.Cards
+            .Include(item => item.Deck)
+            .Include(item => item.Deck.User)
+            .FirstAsync(item => item.Id == id);
 
         if (card == null) return NotFound();
 
-        return MapCardToDto(card);
+        // check user
+        if (card.Deck.User.UserName != User.Identity?.Name) return Unauthorized();
+
+        // update card
+        card.FrontText = cardDto.FrontText;
+        card.BackText = cardDto.BackText;
+        card.ImageUrl = cardDto.ImageUrl;
+        card.UpdatedAt = DateTime.Now;
+
+        // save
+        var result = await _context.SaveChangesAsync() > 0;
+
+        if (result) return Ok();
+
+        return BadRequest(new ProblemDetails { Title = "Problem with saving card" });
     }
 
-    [HttpGet("by-deck-id/{id}")]
-    public async Task<ActionResult<List<CardDto>>> GetCardsByDeckId(int id)
+    [Authorize]
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteCard(int id)
     {
-        return MapCardsToDtos(await _context.Cards.Where(item => item.DeckId == id).ToListAsync());
-    }
+        // get user
+        var user = await _userManager.FindByNameAsync(User.Identity?.Name);
+        if (user == null) return Unauthorized();
 
-    private CardDto MapCardToDto(Card card)
-    {
-        return new CardDto
-        {
-            Id = card.Id,
-            FrontText = card.FrontText,
-            BackText = card.BackText,
-            ImageUrl = card.ImageUrl,
-            CreatedAt = card.CreatedAt,
-            UpdatedAt = card.UpdatedAt,
-        };
-    }
+        // get card
+        if (await _context.Cards.FindAsync(id) == null) return NotFound();
 
-    private List<CardDto> MapCardsToDtos(List<Card> cards)
-    {
-        List<CardDto> cardDtos = [];
+        var card = await _context.Cards
+            .Include(item => item.Deck)
+            .Include(item => item.Deck.User)
+            .FirstAsync(item => item.Id == id);
 
-        foreach (var card in cards)
-        {
-            cardDtos.Add(MapCardToDto(card));
-        }
+        if (card == null) return NotFound();
+        var deck = card.Deck;
 
-        return cardDtos;
+        // check user
+        if (card.Deck.User.UserName != User.Identity?.Name) return Unauthorized();
+
+        // delete card
+        deck.Cards.Remove(card);
+
+        // save
+        var result = await _context.SaveChangesAsync() > 0;
+
+        if (result) return Ok();
+
+        return BadRequest(new ProblemDetails { Title = "Problem with deleting card" });
     }
 }
