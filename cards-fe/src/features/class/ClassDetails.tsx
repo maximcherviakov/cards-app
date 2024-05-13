@@ -75,11 +75,15 @@ export default function ClassDetails() {
               {studyClass?.title}
             </Typography>
           </Grid>
-          <Grid item marginLeft={2}>
-            <IconButton onClick={() => setModalOpen(true)}>
-              <Edit fontSize="large" />
-            </IconButton>
-          </Grid>
+          {user?.userName === studyClass?.username ? (
+            <Grid item marginLeft={2}>
+              <IconButton onClick={() => setModalOpen(true)}>
+                <Edit fontSize="large" />
+              </IconButton>
+            </Grid>
+          ) : (
+            <></>
+          )}
         </Grid>
         <Box width="80%">
           <Grid container flexWrap="nowrap" columnSpacing={4}>

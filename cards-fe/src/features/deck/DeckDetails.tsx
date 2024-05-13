@@ -177,12 +177,6 @@ export default function DeckDetails() {
                           </IconButton>
                         </Grid>
                       </Grid>
-                      {/* <CardHeader
-                        sx={{ padding: 0 }}
-                        subheader={
-                          isFrontSide ? "Term/Front" : "Definition/Back"
-                        }
-                      /> */}
                       <CardContent
                         sx={{
                           height: "100%",
