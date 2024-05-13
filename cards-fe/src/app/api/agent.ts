@@ -48,30 +48,68 @@ axios.interceptors.response.use(
 const requests = {
   get: (url: string, params?: URLSearchParams) =>
     axios.get(url, { params }).then(responseBody),
+  getRawData: (url: string) =>
+    axios.get(url, { responseType: "arraybuffer" }).then(responseBody),
+  getRawDataWithParams: (url: string, params?: URLSearchParams) =>
+    axios
+      .get(url, { params, responseType: "arraybuffer" })
+      .then(responseBody),
   post: (url: string, body: object) => axios.post(url, body).then(responseBody),
+  postWithParams: (url: string, body: object, params: URLSearchParams) =>
+    axios.post(url, body, { params }).then(responseBody),
   put: (url: string, body: object) => axios.put(url, body).then(responseBody),
+  putWithParams: (url: string, body: object, params: URLSearchParams) =>
+    axios.put(url, body, { params }).then(responseBody),
   delete: (url: string) => axios.delete(url).then(responseBody),
 };
 
 const Class = {
-  list: (params?: URLSearchParams) => requests.get("classes", params),
+  list: (params?: URLSearchParams) => requests.get(`classes`, params),
+  listForCurrentUser: () => requests.get(`classes/current-user`),
+  classById: (id: number) => requests.get(`classes/${id}`),
+  createClass: (values: any) => requests.post(`classes`, values),
+  updateClass: (id: number, values: any) => requests.put(`classes/${id}`, values),
+  deleteClass: (id: number) => requests.delete(`classes/${id}`),
 };
 
 const Deck = {
-  list: (params?: URLSearchParams) => requests.get("decks", params),
+  list: (params?: URLSearchParams) => requests.get(`decks`, params),
+  listForCurrentUser: () => requests.get(`decks/current-user`),
   deckById: (id: number) => requests.get(`decks/${id}`),
+  createDeck: (values: any) => requests.post(`decks`, values),
+  updateDeck: (id: number, values: any) => requests.put(`decks/${id}`, values),
+  deleteDeck: (id: number) => requests.delete(`decks/${id}`),
+  assignToClass: (values: any) => requests.put(`decks/assign-to-class`, values),
+  removeFromClass: (values: any) => requests.put(`decks/remove-from-class`, values),
+};
+
+const Card = {
+  createCard: (id: number, values: any, params: URLSearchParams) =>
+    requests.postWithParams(`cards/${id}`, values, params),
+  getImage: (fileName: string) =>
+    requests.getRawData(`cards/image/${fileName}`),
+  updateCard: (id: number, values: any, params: URLSearchParams) =>
+    requests.putWithParams(`cards/${id}`, values, params),
+  deleteCard: (id: number) => requests.delete(`cards/${id}`),
 };
 
 const User = {
-  login: (values: any) => requests.post("user/login", values),
-  register: (values: any) => requests.post("user/register", values),
-  currentUser: () => requests.get("user/currentUser"),
+  login: (values: any) => requests.post(`user/login`, values),
+  register: (values: any) => requests.post(`user/register`, values),
+  currentUser: () => requests.get(`user/currentUser`),
+};
+
+const Proxy = {
+  textToSpeech: (params?: URLSearchParams) =>
+    requests.getRawDataWithParams(`proxy/text-to-speech`, params),
 };
 
 const agent = {
   Class,
   Deck,
+  Card,
   User,
+  Proxy,
 };
 
 export default agent;

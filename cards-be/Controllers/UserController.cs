@@ -29,6 +29,7 @@ public class UserController : BaseApiController
 
         return new UserDto
         {
+            UserName = user.UserName,
             Email = user.Email,
             Token = await _tokenService.GenerateToken(user)
         };
@@ -56,6 +57,7 @@ public class UserController : BaseApiController
         // return StatusCode(201);
         return new UserDto
         {
+            UserName = user.UserName,
             Email = user.Email,
             Token = await _tokenService.GenerateToken(user)
         };
@@ -69,6 +71,7 @@ public class UserController : BaseApiController
 
         return new UserDto
         {
+            UserName = user.UserName,
             Email = user.Email,
             Token = await _tokenService.GenerateToken(user)
         };

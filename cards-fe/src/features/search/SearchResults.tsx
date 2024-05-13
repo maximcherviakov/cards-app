@@ -51,7 +51,7 @@ export default function SearchResults() {
             </TabList>
           </Box>
           <TabPanel value="all" sx={{ padding: 0 }}>
-            <ShortLists setTabValue={setTabValue} />
+            <ShortLists />
           </TabPanel>
           <TabPanel value="decks" sx={{ padding: 0 }}>
             <DeckList />

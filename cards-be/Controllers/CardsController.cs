@@ -1,10 +1,12 @@
 using API.Data;
 using API.Entities;
+using API.Utils;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers;
 
@@ -41,14 +43,23 @@ public class CardsController : BaseApiController
         if (deck.User.UserName != User.Identity?.Name) return Unauthorized();
 
         // create card
-        var card = new Card
+        Card card = null;
+        try
         {
-            FrontText = cardDto.FrontText,
-            BackText = cardDto.BackText,
-            ImageUrl = cardDto.ImageUrl,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
-        };
+            card = new Card
+            {
+                FrontText = cardDto.FrontText,
+                BackText = cardDto.BackText,
+                ImageUrl = await UploadHelper.UploadImage(cardDto.Image),
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ProblemDetails { Title = ex.Message });
+        }
+
 
         // add card
         deck.Cards.Add(card);
@@ -83,10 +94,27 @@ public class CardsController : BaseApiController
         if (card.Deck.User.UserName != User.Identity?.Name) return Unauthorized();
 
         // update card
-        card.FrontText = cardDto.FrontText;
-        card.BackText = cardDto.BackText;
-        card.ImageUrl = cardDto.ImageUrl;
-        card.UpdatedAt = DateTime.Now;
+        var oldImageUrl = card.ImageUrl;
+        try
+        {
+            if (!cardDto.FrontText.IsNullOrEmpty())
+                card.FrontText = cardDto.FrontText;
+            if (!cardDto.BackText.IsNullOrEmpty())
+                card.BackText = cardDto.BackText;
+            card.UpdatedAt = DateTime.Now;
+
+            var newImageUrl = await UploadHelper.UploadImage(cardDto.Image);
+            if (newImageUrl != null)
+            {
+                card.ImageUrl = newImageUrl;
+                UploadHelper.DeleteFile(oldImageUrl);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ProblemDetails { Title = ex.Message });
+        }
 
         // save
         var result = await _context.SaveChangesAsync() > 0;
@@ -127,5 +155,24 @@ public class CardsController : BaseApiController
         if (result) return Ok();
 
         return BadRequest(new ProblemDetails { Title = "Problem with deleting card" });
+    }
+
+    [HttpGet("image/{fileName}")]
+    public ActionResult GetCardImage(string fileName)
+    {
+        if (!string.IsNullOrEmpty(fileName))
+        {
+            try
+            {
+                FileStream fileStream = UploadHelper.GetFileStream(fileName);
+                return File(fileStream, "image/*");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ProblemDetails { Title = ex.Message });
+            }
+        }
+
+        return BadRequest(new ProblemDetails { Title = "Url is empty" });
     }
 }

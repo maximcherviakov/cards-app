@@ -10,6 +10,9 @@ import RequireAuth from "./RequireAuth";
 import Dashboard from "../../features/dashboard/Dashboard";
 import Login from "../../features/account/Login";
 import Logout from "../../features/account/Logout";
+import EditCardsPage from "../../features/deck/EditCardsPage";
+import Profile from "../../features/account/Profile";
+import ClassDetails from "../../features/class/ClassDetails";
 
 export const router = createBrowserRouter([
   {
@@ -18,11 +21,16 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <RequireAuth />,
-        children: [{ path: "dashboard", element: <Dashboard /> }],
+        children: [
+          { path: "dashboard", element: <Dashboard /> },
+          { path: "profile", element: <Profile /> },
+          { path: "edit/deck/:id", element: <EditCardsPage /> },
+        ],
       },
       { path: "", element: <HomePage /> },
       { path: "search", element: <Search /> },
       { path: "deck/:id", element: <DeckDetails /> },
+      { path: "class/:id", element: <ClassDetails /> },
 
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },

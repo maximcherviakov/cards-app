@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FieldValues, useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import { useAppDispatch } from "../../app/store/configureStore";
-import { registerUser } from "./accountSlice";
+import { registerUser, signOut } from "./accountSlice";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ export default function Register() {
 
   async function submitForm(data: FieldValues) {
     try {
+      await dispatch(signOut());
       await dispatch(registerUser(data));
       navigate("/dashboard");
     } catch (error) {

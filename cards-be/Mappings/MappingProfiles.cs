@@ -21,6 +21,11 @@ public class MappingProfiles : Profile
         CreateMap<Class, ClassDto>()
             .ForMember(dest => dest.Username,
                     opt => opt.MapFrom(src => src.User.UserName));
+        CreateMap<Class, ClassWithDeckDto>()
+            .ForMember(dest => dest.Username,
+                    opt => opt.MapFrom(src => src.User.UserName))
+            .ForMember(dest => dest.Decks,
+                    opt => opt.MapFrom(src => src.Decks));
         CreateMap<Card, CardDto>();
     }
 }

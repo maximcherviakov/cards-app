@@ -6,17 +6,18 @@ import {
   Typography,
 } from "@mui/material";
 import { Class } from "../models/studyClass";
+import { Link } from "react-router-dom";
 
 interface Props {
   studyClass: Class;
 }
 
 export default function ClassCard({ studyClass }: Props) {
-  const { title, username } = studyClass;
+  const { id, title, username } = studyClass;
 
   return (
     <Card>
-      <CardActionArea>
+      <CardActionArea component={Link} to={`/class/${id}`}>
         <CardContent>
           <Typography gutterBottom variant="h5">
             {title}

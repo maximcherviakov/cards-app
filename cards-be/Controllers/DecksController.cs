@@ -83,20 +83,9 @@ public class DecksController : BaseApiController
         return decks;
     }
 
-    [HttpGet("by-class-id/{id}")]
-    public async Task<ActionResult<List<DeckDto>>> GetDecksByClassId(int id)
-    {
-        return await _context.Decks
-            .Include(item => item.User)
-            .Include(item => item.Cards)
-            .Where(item => item.ClassId == id)
-            .Select(items => _mapper.Map<DeckDto>(items))
-            .ToListAsync();
-    }
-
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<DeckDto>> CreateDeck(DeckContentDto deckDto)
+    public async Task<ActionResult<DeckDto>> CreateDeck(ContentDto deckDto)
     {
         // get user
         var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -125,7 +114,7 @@ public class DecksController : BaseApiController
 
     [Authorize]
     [HttpPut("{id}")]
-    public async Task<ActionResult<DeckDto>> UpdateDeck(int id, DeckContentDto deckDto)
+    public async Task<ActionResult<DeckDto>> UpdateDeck(int id, ContentDto deckDto)
     {
         // get user
         var user = await _userManager.FindByNameAsync(User.Identity?.Name);
@@ -151,6 +140,78 @@ public class DecksController : BaseApiController
         if (result) return _mapper.Map<DeckDto>(deck);
 
         return BadRequest(new ProblemDetails { Title = "Problem with updating deck" });
+    }
+
+    [Authorize]
+    [HttpPut("assign-to-class")]
+    public async Task<ActionResult> AssignClass(ClassDeckContentDto classDeckContentDto)
+    {
+        // get user
+        var user = await _userManager.FindByNameAsync(User.Identity?.Name);
+        if (user == null) return Unauthorized();
+
+        // get deck
+        if (await _context.Decks.FindAsync(classDeckContentDto.deckId) == null) return NotFound();
+
+        var deck = await _context.Decks
+            .Include(item => item.User)
+            .FirstAsync(item => item.Id == classDeckContentDto.deckId);
+        if (deck == null) return NotFound();
+        if (deck.User?.UserName != User.Identity?.Name) return Unauthorized();
+
+        // get class
+        if (await _context.Classes.FindAsync(classDeckContentDto.classId) == null) return NotFound();
+
+        var studyClass = await _context.Classes
+            .Include(item => item.User)
+            .FirstAsync(item => item.Id == classDeckContentDto.classId);
+        if (studyClass == null) return NotFound();
+        if (studyClass.User?.UserName != User.Identity?.Name) return Unauthorized();
+
+        // assign class to deck
+        deck.Class = studyClass;
+
+        // save
+        var result = await _context.SaveChangesAsync() > 0;
+        if (result) return Ok("Class has been assigned to deck");
+
+        return BadRequest(new ProblemDetails { Title = "Problem with assigning class to deck" });
+    }
+
+    [Authorize]
+    [HttpPut("remove-from-class")]
+    public async Task<ActionResult> RemoveClass(ClassDeckContentDto classDeckContentDto)
+    {
+        // get user
+        var user = await _userManager.FindByNameAsync(User.Identity?.Name);
+        if (user == null) return Unauthorized();
+
+        // get deck
+        if (await _context.Decks.FindAsync(classDeckContentDto.deckId) == null) return NotFound();
+
+        var deck = await _context.Decks
+            .Include(item => item.User)
+            .FirstAsync(item => item.Id == classDeckContentDto.deckId);
+        if (deck == null) return NotFound();
+        if (deck.User?.UserName != User.Identity?.Name) return Unauthorized();
+
+        // get class
+        if (await _context.Classes.FindAsync(classDeckContentDto.classId) == null) return NotFound();
+
+        var studyClass = await _context.Classes
+            .Include(item => item.User)
+            .FirstAsync(item => item.Id == classDeckContentDto.classId);
+        if (studyClass == null) return NotFound();
+        if (studyClass.User?.UserName != User.Identity?.Name) return Unauthorized();
+
+        // assign class to deck
+        deck.Class = null;
+
+        // save
+        var result = await _context.SaveChangesAsync() > 0;
+        if (result) return Ok("Class has been removed from deck");
+
+        return BadRequest(new ProblemDetails { Title = "Problem with assigning class to deck" });
     }
 
     [Authorize]

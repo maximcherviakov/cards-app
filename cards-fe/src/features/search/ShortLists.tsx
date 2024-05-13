@@ -7,11 +7,7 @@ import agent from "../../app/api/agent";
 import { Deck } from "../../app/models/deck";
 import { Class } from "../../app/models/studyClass";
 
-interface Props {
-  setTabValue: (value: string) => void;
-}
-
-export default function ShortLists({ setTabValue }: Props) {
+export default function ShortLists() {
   const [queryParams, setQueryParams] = useSearchParams();
   const [decks, setDecks] = useState<Deck[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);

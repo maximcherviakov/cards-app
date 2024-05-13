@@ -15,7 +15,6 @@ export default function App() {
   const initApp = useCallback(async () => {
     try {
       await dispatch(fetchCurrentUser());
-      console.log("initApp");
     } catch (error: any) {
       console.log(error);
     }

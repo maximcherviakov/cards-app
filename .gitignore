@@ -487,3 +487,6 @@ $RECYCLE.BIN/
 *.db
 *.db-shm
 *.db-wal
+
+# Uploaded files
+UploadedImages/

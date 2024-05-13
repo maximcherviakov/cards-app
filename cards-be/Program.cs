@@ -69,6 +69,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -96,14 +97,14 @@ var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<DataContext>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-try
-{
-    context.Database.Migrate();
-    await DbInitializer.Initialize(context, userManager);
-}
-catch (Exception ex)
-{
-    logger.LogError(ex, "A problem occurred during the migration");
-}
+// try
+// {
+//     context.Database.Migrate();
+//     await DbInitializer.Initialize(context, userManager);
+// }
+// catch (Exception ex)
+// {
+//     logger.LogError(ex, "A problem occurred during the migration");
+// }
 
 app.Run();
