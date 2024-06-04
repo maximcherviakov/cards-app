@@ -98,6 +98,7 @@ export default function EditCardView({ card, loadCards }: Props) {
           marginBottom={1}
         >
           <IconButton
+            aria-label={"Edit card " + id}
             onClick={(event: any) => {
               event.stopPropagation();
               event.preventDefault();
@@ -107,6 +108,7 @@ export default function EditCardView({ card, loadCards }: Props) {
             <Edit />
           </IconButton>
           <IconButton
+            aria-label={"Delete card " + id}
             onClick={(event: any) => {
               event.stopPropagation();
               event.preventDefault();
@@ -145,7 +147,7 @@ export default function EditCardView({ card, loadCards }: Props) {
                   component="img"
                   alt={frontText}
                   src={image}
-                  sx={{objectFit: "contain"}}
+                  sx={{ objectFit: "contain" }}
                 />
               </Grid>
             </>

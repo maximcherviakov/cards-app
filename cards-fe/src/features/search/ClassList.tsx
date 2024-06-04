@@ -5,7 +5,7 @@ import agent from "../../app/api/agent";
 import { MetaData } from "../../app/models/pagination";
 import AppPagination from "../../app/components/AppPagination";
 import { Class } from "../../app/models/studyClass";
-import ClassCard from "../../app/components/ClassCard";
+import ClassCard from "../class/ClassCard";
 
 export default function ClassList() {
   const [queryParams, setQueryParams] = useSearchParams();

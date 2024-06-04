@@ -12,10 +12,10 @@ import { ClassWithDecks } from "../../app/models/studyClass";
 import { useParams } from "react-router-dom";
 import agent from "../../app/api/agent";
 import { useAppSelector } from "../../app/store/configureStore";
-import DeckCard from "../../app/components/DeckCard";
 import { Edit } from "@mui/icons-material";
 import { modalStyle } from "../../app/styles/modalStyle";
 import { Deck } from "../../app/models/deck";
+import DeckCard from "../deck/DeckCard";
 
 export default function ClassDetails() {
   const { id } = useParams<{ id: string }>();
@@ -27,7 +27,7 @@ export default function ClassDetails() {
 
   useEffect(() => {
     if (id) loadClass(parseInt(id));
-    loadDecks();
+    if (user) loadDecks();
   }, [id, user]);
 
   function loadClass(id: number) {

@@ -6,8 +6,8 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import { Deck } from "../models/deck";
 import { Link } from "react-router-dom";
+import { Deck } from "../../app/models/deck";
 
 interface Props {
   deck: Deck;

@@ -86,6 +86,7 @@ export default function EditCardsPage() {
             </Typography>
             <TextField
               sx={{ marginBottom: "1rem" }}
+              label="Type your term here..."
               fullWidth
               multiline
               minRows={3}
@@ -102,6 +103,7 @@ export default function EditCardsPage() {
             </Typography>
             <TextField
               sx={{ marginBottom: "1rem" }}
+              label="Type your definition here..."
               fullWidth
               multiline
               minRows={3}

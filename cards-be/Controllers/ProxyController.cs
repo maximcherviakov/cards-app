@@ -29,5 +29,4 @@ public class ProxyController : BaseApiController
             return StatusCode((int)response.StatusCode);
         }
     }
-
 }

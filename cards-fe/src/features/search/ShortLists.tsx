@@ -1,11 +1,11 @@
 import { Box, Grid, Typography, Button, Divider } from "@mui/material";
-import ClassCard from "../../app/components/ClassCard";
-import DeckCard from "../../app/components/DeckCard";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import agent from "../../app/api/agent";
 import { Deck } from "../../app/models/deck";
 import { Class } from "../../app/models/studyClass";
+import DeckCard from "../deck/DeckCard";
+import ClassCard from "../class/ClassCard";
 
 export default function ShortLists() {
   const [queryParams, setQueryParams] = useSearchParams();

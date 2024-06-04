@@ -12,11 +12,11 @@ interface Props {
 const Search = styled("form")(({ theme }) => ({
   height: "fit-content",
   position: "relative",
-  border: "1px solid",
+  border: "1px solid gray",
   borderRadius: 18,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  backgroundColor: alpha(theme.palette.common.white, 0.55),
   "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
+    backgroundColor: alpha(theme.palette.common.white, 0.65),
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
@@ -34,7 +34,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: "100%",
-  color: "inherit",
+  color: "black",
   margin: "4px 0",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
@@ -60,7 +60,7 @@ export default function SearchBar({ fontSize, width }: Props) {
       sx={{ width: width }}
     >
       <SearchIconWrapper>
-        <IconButton type="submit">
+        <IconButton type="submit" aria-label="search-button">
           <SearchIcon sx={{ fontSize: fontSize }} />
         </IconButton>
       </SearchIconWrapper>

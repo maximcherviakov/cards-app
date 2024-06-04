@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using API.Data;
 using API.DTOs;
 using API.Entities;
@@ -204,7 +203,7 @@ public class DecksController : BaseApiController
         if (studyClass == null) return NotFound();
         if (studyClass.User?.UserName != User.Identity?.Name) return Unauthorized();
 
-        // assign class to deck
+        // remove deck from class
         deck.Class = null;
 
         // save

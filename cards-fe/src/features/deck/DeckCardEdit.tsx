@@ -12,22 +12,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Class } from "../models/studyClass";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import { Delete, Edit } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { modalStyle } from "../styles/modalStyle";
-import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import agent from "../api/agent";
-import { Link } from "react-router-dom";
+import agent from "../../app/api/agent";
+import { modalStyle } from "../../app/styles/modalStyle";
+import { Deck } from "../../app/models/deck";
 
 interface Props {
-  studyClass: Class;
-  loadClasses: () => void;
+  deck: Deck;
+  loadDecks: () => void;
 }
 
-export default function ClassCardEdit({ studyClass, loadClasses }: Props) {
-  const { id, title, description, isPrivate, username } = studyClass;
+export default function DeckCardEdit({ deck, loadDecks }: Props) {
+  const { id, title, description, isPrivate, username, cardsCount } = deck;
   const [stateTitle, setStateTitle] = useState(title);
   const [stateDescription, setStateDescription] = useState(description);
   const [stateIsPrivate, setStateIsPrivate] = useState(isPrivate);
@@ -46,12 +46,11 @@ export default function ClassCardEdit({ studyClass, loadClasses }: Props) {
       description: data.description,
       isPrivate: data.isPrivate === "true",
     };
-    await agent.Class.updateClass(id, newData)
+    await agent.Deck.updateDeck(id, newData)
       .then((response) => {
         setStateTitle(response.title);
         setStateDescription(response.description);
         setStateIsPrivate(response.isPrivate);
-        loadClasses();
       })
       .catch((error) => console.log(error))
       .finally(() => setModalUpdateOpen(false));
@@ -60,8 +59,8 @@ export default function ClassCardEdit({ studyClass, loadClasses }: Props) {
   async function submitDeleteForm(event: any) {
     event.preventDefault();
     setDeleting(true);
-    await agent.Class.deleteClass(id)
-      .then(() => loadClasses())
+    await agent.Deck.deleteDeck(id)
+      .then(() => loadDecks())
       .catch((error) => console.log(error))
       .finally(() => {
         setDeleting(false);
@@ -72,17 +71,28 @@ export default function ClassCardEdit({ studyClass, loadClasses }: Props) {
   return (
     <>
       <Card>
-        <CardActionArea component={Link} to={`/class/${id}`}>
+        <CardActionArea component={Link} to={`/deck/${id}`}>
           <CardContent>
             <Typography gutterBottom variant="h5">
-              {title}
+              {stateTitle}
             </Typography>
             <Divider />
-            <Typography marginTop="2rem" variant="body1">
-              By: {username}
-            </Typography>
+            <Box
+              sx={{
+                width: "fit-content",
+                backgroundColor: "grey",
+                borderRadius: "100px",
+                paddingY: "0.3rem",
+                paddingX: "0.5rem",
+                marginY: "1rem",
+              }}
+            >
+              {cardsCount} terms
+            </Box>
+            <Typography variant="body1">By: {username}</Typography>
             <Grid container direction="row" justifyContent="right">
               <IconButton
+                aria-label={"Edit deck card" + id}
                 onClick={(event: any) => {
                   event.stopPropagation();
                   event.preventDefault();
@@ -92,6 +102,7 @@ export default function ClassCardEdit({ studyClass, loadClasses }: Props) {
                 <Edit />
               </IconButton>
               <IconButton
+                aria-label={"Delete deck card" + id}
                 onClick={(event: any) => {
                   event.stopPropagation();
                   event.preventDefault();
@@ -104,10 +115,11 @@ export default function ClassCardEdit({ studyClass, loadClasses }: Props) {
           </CardContent>
         </CardActionArea>
       </Card>
+
       <Modal open={modalUpdateOpen} onClose={() => setModalUpdateOpen(false)}>
         <Box sx={modalStyle}>
           <Typography paddingBottom={2} variant="h6" fontWeight={700}>
-            Edit class
+            Edit deck
           </Typography>
           <Box
             component="form"
@@ -176,7 +188,7 @@ export default function ClassCardEdit({ studyClass, loadClasses }: Props) {
       <Modal open={modalDeleteOpen} onClose={() => setModalDeleteOpen(false)}>
         <Box sx={modalStyle}>
           <Typography paddingBottom={2} variant="h6" fontWeight={700}>
-            Delete class
+            Delete deck
           </Typography>
           <Box
             component="form"

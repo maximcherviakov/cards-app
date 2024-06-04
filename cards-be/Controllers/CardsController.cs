@@ -1,7 +1,7 @@
 using API.Data;
+using API.DTOs;
 using API.Entities;
 using API.Utils;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -59,7 +59,6 @@ public class CardsController : BaseApiController
         {
             return BadRequest(new ProblemDetails { Title = ex.Message });
         }
-
 
         // add card
         deck.Cards.Add(card);

@@ -1,11 +1,11 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import DeckCard from "../../app/components/DeckCard";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import agent from "../../app/api/agent";
 import { Deck } from "../../app/models/deck";
 import { MetaData } from "../../app/models/pagination";
 import AppPagination from "../../app/components/AppPagination";
+import DeckCard from "../deck/DeckCard";
 
 export default function DeckList() {
   const [queryParams, setQueryParams] = useSearchParams();

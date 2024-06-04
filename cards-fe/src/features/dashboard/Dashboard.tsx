@@ -16,10 +16,10 @@ import { Add } from "@mui/icons-material";
 import { FieldValues, useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
-import DeckCardEdit from "../../app/components/DeckCardEdit";
 import { modalStyle } from "../../app/styles/modalStyle";
 import { Class } from "../../app/models/studyClass";
-import ClassCardEdit from "../../app/components/ClassCardEdit";
+import ClassCardEdit from "../class/ClassCardEdit";
+import DeckCardEdit from "../deck/DeckCardEdit";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -100,7 +100,10 @@ export default function Dashboard() {
             <Typography variant="h5">Study sets</Typography>
           </Grid>
           <Grid item>
-            <IconButton onClick={() => setDeckModalOpen(true)}>
+            <IconButton
+              aria-label="Add new deck"
+              onClick={() => setDeckModalOpen(true)}
+            >
               <Add />
             </IconButton>
           </Grid>
@@ -127,7 +130,10 @@ export default function Dashboard() {
             <Typography variant="h5">Classes</Typography>
           </Grid>
           <Grid item>
-            <IconButton onClick={() => setClassModalOpen(true)}>
+            <IconButton
+              aria-label="Add new class"
+              onClick={() => setClassModalOpen(true)}
+            >
               <Add />
             </IconButton>
           </Grid>

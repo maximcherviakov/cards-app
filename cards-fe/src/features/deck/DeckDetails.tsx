@@ -163,6 +163,7 @@ export default function DeckDetails() {
                         </Grid>
                         <Grid item>
                           <IconButton
+                            aria-label="speech"
                             onClick={(event: any) => {
                               event.stopPropagation();
                               event.preventDefault();
@@ -219,13 +220,21 @@ export default function DeckDetails() {
                 </Card>
               </Grid>
               <Grid item container alignItems="center" justifyContent="center">
-                <IconButton size="large" onClick={decrPointer}>
+                <IconButton
+                  aria-label="slide-back"
+                  size="large"
+                  onClick={decrPointer}
+                >
                   <ArrowBack />
                 </IconButton>
                 <Typography>
                   {cardPointer + 1} / {deck?.cards.length}
                 </Typography>
-                <IconButton size="large" onClick={incrPointer}>
+                <IconButton
+                  aria-label="slide-forward"
+                  size="large"
+                  onClick={incrPointer}
+                >
                   <ArrowForward />
                 </IconButton>
               </Grid>

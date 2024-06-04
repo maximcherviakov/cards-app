@@ -1,3 +1,5 @@
+namespace API.DTOs;
+
 public class CardContentDto
 {
     public string FrontText { get; set; }

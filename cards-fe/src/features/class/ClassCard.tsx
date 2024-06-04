@@ -5,8 +5,8 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import { Class } from "../models/studyClass";
 import { Link } from "react-router-dom";
+import { Class } from "../../app/models/studyClass";
 
 interface Props {
   studyClass: Class;
